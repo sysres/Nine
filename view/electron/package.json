@@ -1,0 +1,25 @@
+{
+  "name": "nonix",
+  "version": "1.0.0",
+  "description": "None a Unix",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/madlambda/nonix.git"
+  },
+  "keywords": [
+    "operating-system",
+    "plan9",
+    "unix",
+    "hosted"
+  ],
+  "author": "Tiago Natel de Moura",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/madlambda/nonix/issues"
+  },
+  "homepage": "https://github.com/madlambda/nonix#readme"
+}

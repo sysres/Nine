@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Nonix Operating System</title>
+    
+    <script src="setup.js"></script>
+    <script src="wasm_exec.js"></script>
+    <script>
+      window.addEventListener('load', loadKernel);
+
+      function loadKernel() {
+        const go = new Go();
+        go.argv = ["dist/nonix.wasm"];
+		    go.env = process.env;
+		    //go.exit = process.exit;
+		    console.log(process.argv);
+		
+		    WebAssembly.instantiateStreaming(fetch("nonix.wasm"), go.importObject).then((result) => {
+			    process.on("exit", (code) => { // Node.js exits if no callback is pending
+				    if (code === 0 && !go.exited) {
+					    // deadlock, make Go print error and stack traces
+					    go._callbackShutdown = true;
+					    go._inst.exports.run();
+				    }
+			    });
+			    return go.run(result.instance);
+		    }).catch((err) => {
+			    throw err;
+        });
+    }
+
+    </script>
+  </head>
+
+  <body>
+    <h1>Welcome to Nonix Operating system</h1>
+    We are using node <script>document.write(process.versions.node)</script>,
+    Chrome <script>document.write(process.versions.chrome)</script>,
+    and Electron <script>document.write(process.versions.electron)</script>.
+  </body>
+</html>
