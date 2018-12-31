@@ -12,6 +12,13 @@ Did you dream about a Plan9 environment with a modern browser? If yes, Nonix cou
 
 Nonix runs as processes in your operating system but actually, it's a full-featured operating system on its all. We emphasize a good programming environment rather than performance at this moment as Nonix could support a bare metal build in the future also.
 
+Nonix supports to run as a daemon/server or as graphical terminal. In the former case it could be deployed in the cloud running native or inside a container. In the latter, it could run hosted inside an electron app (chrome).
+
+## Nonix Server
+
+Nonix server runs compiled to WASM on top of a V8 javascript engine like NodeJS. Then it could run anywhere nodejs is supported. It has the same programming environment as the graphical interface but lacking some resources (graphical display, camera, mouse and so on). 
+You could use the graphical terminal on your notebook but using resources from a server Nonix.
+
 ## Linux/MacOS/Windows Host
 
 Nonix runs on Linux, OSX and Windows as a Electron App (Chrome + nodejs + webassembly).
