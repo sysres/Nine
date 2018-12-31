@@ -410,29 +410,4 @@
 			};
 		}
 	}
-
-	/*if (isNodeJS) {
-		if (process.argv.length < 3) {
-			process.stderr.write("usage: go_js_wasm_exec [wasm binary] [arguments]\n");
-			process.exit(1);
-		}
-
-		const go = new Go();
-		go.argv = process.argv.slice(2);
-		go.env = process.env;
-		go.exit = process.exit;
-		console.log(process.argv);
-		WebAssembly.instantiate(fs.readFileSync(process.argv[2]), go.importObject).then((result) => {
-			process.on("exit", (code) => { // Node.js exits if no callback is pending
-				if (code === 0 && !go.exited) {
-					// deadlock, make Go print error and stack traces
-					go._callbackShutdown = true;
-					go._inst.exports.run();
-				}
-			});
-			return go.run(result.instance);
-		}).catch((err) => {
-			throw err;
-		});
-	}*/
 })();

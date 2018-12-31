@@ -1,10 +1,7 @@
 all: build deps
 
-run: ./dist/wasm_exec.js
+run: 
 	npm start
-
-dist/wasm_exec.js:
-	cp "`go env GOROOT`/misc/wasm/wasm_exec.js" $@
 
 deps:
 	sudo apt-get update && sudo apt-get install yarn
