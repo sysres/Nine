@@ -10,7 +10,8 @@ import (
 
 func main() {
 
-	fmt.Printf("Welcome to nonix!\n")
+	// This prints goes to chrome console output by now.
+	fmt.Printf("Welcome to Nine Operating System!\n")
 	fmt.Printf("Go version: %s\n", sys.GoVersion())
 
 	err := sys.Bootstrap()
