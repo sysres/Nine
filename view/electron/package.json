@@ -1,16 +1,17 @@
 {
-  "name": "nonix",
+  "name": "nine",
   "version": "1.0.0",
-  "description": "None a Unix",
+  "description": "Nine from Neoway",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/madlambda/nonix.git"
+    "url": "git+https://github.com/madlambda/Nine.git"
   },
   "keywords": [
+    "nine",
     "operating-system",
     "plan9",
     "unix",
@@ -19,7 +20,7 @@
   "author": "Tiago Natel de Moura",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/madlambda/nonix/issues"
+    "url": "https://github.com/madlambda/Nine/issues"
   },
-  "homepage": "https://github.com/madlambda/nonix#readme"
+  "homepage": "https://github.com/madlambda/Nine#readme"
 }

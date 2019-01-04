@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/madlambda/nonix/sys"
+	"github.com/madlambda/Nine/sys"
 )
 
 func main() {

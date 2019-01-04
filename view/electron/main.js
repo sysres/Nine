@@ -1,4 +1,4 @@
-// Nonix GUI entrypoint
+// Nine GUI entrypoint
 
 const { app, BrowserWindow } = require('electron')
 const path = require('path')
