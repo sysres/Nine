@@ -10,7 +10,7 @@ const url = require('url')
 let win
 
 function createWindow () {
-    win = new BrowserWindow({ width: 800, height: 600 });
+    win = new BrowserWindow({ width: 1024, height: 768 });
     // and load the hello.html of the app.
     win.loadURL(url.format({
         pathname: path.join(__dirname, 'dist/index.html'),
