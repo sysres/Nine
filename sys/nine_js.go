@@ -12,11 +12,6 @@ func bootstrap(nine *Nine) error {
 
 	nine.ScreenWidth = doc.Get("body").Get("clientWidth").Float()
 	nine.ScreenHeight = doc.Get("body").Get("clientHeight").Float()
-
-	canvasEl.Set("width", nine.ScreenWidth)
-	canvasEl.Set("height", nine.ScreenHeight)
-	canvasEl.Set("style", "cursor: none")
-
 	nine.Ctx2d = GetJSCtx2d(canvasEl)
 	return nil
 }

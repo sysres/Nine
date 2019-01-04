@@ -9,16 +9,14 @@ import (
 )
 
 func main() {
-
-	// This prints goes to chrome console output by now.
-	fmt.Printf("Welcome to Nine Operating System!\n")
-	fmt.Printf("Go version: %s\n", sys.GoVersion())
-
 	err := sys.Bootstrap()
 	if err != nil {
 		fmt.Printf("FATAL: %s\n", err)
 		os.Exit(1)
 	}
+
+	sys.Printf(5, 20, "Welcome to Nine Operating System!")
+	sys.Printf(5, 50, "Go version: %s", sys.GoVersion())
 
 	for {
 		fmt.Printf(".")

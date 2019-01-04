@@ -1,6 +1,7 @@
 package sys
 
 import (
+	"fmt"
 	"runtime"
 
 	"github.com/madlambda/Nine/sys/graphics"
@@ -14,6 +15,12 @@ type (
 	}
 )
 
+const (
+	defBgStyle   = "#000000"
+	defFontStyle = "#ffffff"
+	defFont      = "18px Helvetica"
+)
+
 var (
 	nine *Nine
 )
@@ -25,14 +32,28 @@ func GoVersion() string {
 
 // Bootstrap nine kernel
 func Bootstrap() error {
-	nine := &Nine{}
+	nine = &Nine{}
 	err := bootstrap(nine) // system-dependent
 	if err != nil {
 		return err
 	}
 
 	nine.Ctx2d.ClearRect(0, 0, nine.ScreenWidth, nine.ScreenHeight)
-	nine.Ctx2d.SetFont("72px serif")
-	nine.Ctx2d.FillText("Welcome to nine Operating System", 10, 50)
+	nine.Ctx2d.SetFillStyle(defBgStyle)
+	nine.Ctx2d.FillRect(0, 0, nine.ScreenWidth, nine.ScreenHeight)
 	return nil
+}
+
+// Printf is a low level primitive to print formatted text to
+// the screen. You need to pass the x and y position because
+// at this point there's no concept of console yet.
+func Printf(x, y float64, format string, args ...interface{}) {
+	if nine.Ctx2d == nil {
+		panic("Nine not initialized")
+	}
+
+	str := fmt.Sprintf(format, args...)
+	nine.Ctx2d.SetFont(defFont)
+	nine.Ctx2d.SetFillStyle(defFontStyle)
+	nine.Ctx2d.FillText(str, x, y)
 }
