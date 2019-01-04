@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Nonix Operating System</title>
+    <title>Nine Operating System</title>
     
     <script src="setup.js"></script>
     <script src="wasm_exec.js"></script>
@@ -11,12 +11,12 @@
 
       function loadKernel() {
         const go = new Go();
-        go.argv = ["dist/nonix.wasm"];
+        go.argv = ["dist/nine.wasm"];
 		    go.env = process.env;
 		    //go.exit = process.exit;
 		    console.log(process.argv);
 		
-		    WebAssembly.instantiateStreaming(fetch("nonix.wasm"), go.importObject).then((result) => {
+		    WebAssembly.instantiateStreaming(fetch("nine.wasm"), go.importObject).then((result) => {
 			    process.on("exit", (code) => { // Node.js exits if no callback is pending
 				    if (code === 0 && !go.exited) {
 					    // deadlock, make Go print error and stack traces
