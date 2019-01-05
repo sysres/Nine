@@ -1,3 +1,3 @@
 // Package sys implements the system-independent interface to
-// Nonix kernel.
+// Nine kernel.
 package sys
