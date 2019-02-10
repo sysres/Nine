@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Nine Operating System</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+    </style>
+    
+    <script src="setup.js"></script>
+    <script src="wasm_exec.js"></script>
+    <script>
+      window.addEventListener('load', loadKernel);
+
+      var PIXEL_RATIO = (function () {
+        var ctx = document.createElement("canvas").getContext("2d"),
+            dpr = window.devicePixelRatio || 1,
+            bsr = ctx.webkitBackingStorePixelRatio ||
+                  ctx.mozBackingStorePixelRatio ||
+                  ctx.msBackingStorePixelRatio ||
+                  ctx.oBackingStorePixelRatio ||
+                  ctx.backingStorePixelRatio || 1;
+        return dpr / bsr;
+      })();
+
+
+      // Create a canvas scaled up to the devicePixelRatio.
+      // Otherwise Nine will have to deal with the aspect ratio
+      // when drawing.
+      // https://www.html5rocks.com/en/tutorials/canvas/hidpi/
+      function createHiDPICanvas(w, h, ratio) {
+          if (!ratio) { ratio = PIXEL_RATIO; }
+          var can = document.createElement("canvas");
+          can.id = "screen";
+          can.width = w * ratio;
+          can.height = h * ratio;
+          can.style.width = w + "px";
+          can.style.height = h + "px";
+          can.getContext("2d").setTransform(ratio, 0, 0, ratio, 0, 0);
+          return can;
+      }
+
+      function loadKernel() {
+          var myCanvas = createHiDPICanvas(window.innerWidth, window.innerHeight);
+          document.body.appendChild(myCanvas);
+
+          const go = new Go();
+          go.argv = ["dist/nine.wasm"];
+          go.env = process.env;
+          //go.exit = process.exit;
+          console.log("electron args", process.argv);
+      
+          WebAssembly.instantiateStreaming(fetch("nine.wasm"), go.importObject).then((result) => {
+            process.on("exit", (code) => { // Node.js exits if no callback is pending
+              if (code === 0 && !go.exited) {
+                // deadlock, make Go print error and stack traces
+                go._callbackShutdown = true;
+                go._inst.exports.run();
+              }
+            });
+            return go.run(result.instance);
+          }).catch((err) => {
+            throw err;
+          });
+    }
+    </script>
+  </head>
+
+  <body>
+    
+  </body>
+</html>
