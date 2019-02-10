@@ -1,59 +1,29 @@
-// Copyright 2018 The Go Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
 (() => {
-	// Map web browser API and Node.js API to a single common API (preferring web standards over Node.js API).
 	const isNodeJS = typeof process !== "undefined";
-	if (isNodeJS) {
-		global.require = require;
-		global.fs = require("fs");
-
-		const nodeCrypto = require("crypto");
-		global.crypto = {
-			getRandomValues(b) {
-				nodeCrypto.randomFillSync(b);
-			},
-		};
-
-		global.performance = {
-			now() {
-				const [sec, nsec] = process.hrtime();
-				return sec * 1000 + nsec / 1000000;
-			},
-		};
-
-		const util = require("util");
-		global.TextEncoder = util.TextEncoder;
-		global.TextDecoder = util.TextDecoder;
-	} else {
-		if (typeof window !== "undefined") {
-			window.global = window;
-		} else if (typeof self !== "undefined") {
-			self.global = self;
-		} else {
-			throw new Error("cannot export Go (neither window nor self is defined)");
-		}
-
-		let outputBuf = "";
-		global.fs = {
-			constants: { O_WRONLY: -1, O_RDWR: -1, O_CREAT: -1, O_TRUNC: -1, O_APPEND: -1, O_EXCL: -1 }, // unused
-			writeSync(fd, buf) {
-				outputBuf += decoder.decode(buf);
-				const nl = outputBuf.lastIndexOf("\n");
-				if (nl != -1) {
-					console.log(outputBuf.substr(0, nl));
-					outputBuf = outputBuf.substr(nl + 1);
-				}
-				return buf.length;
-			},
-			openSync(path, flags, mode) {
-				const err = new Error("not implemented");
-				err.code = "ENOSYS";
-				throw err;
-			},
-		};
+	if (!isNodeJS) {
+		alert("Nine+Electron requires nodejs environment");
 	}
+
+	global.require = require;
+	global.fs = require("fs");
+
+	const nodeCrypto = require("crypto");
+	global.crypto = {
+		getRandomValues(b) {
+			nodeCrypto.randomFillSync(b);
+		},
+	};
+
+	global.performance = {
+		now() {
+			const [sec, nsec] = process.hrtime();
+			return sec * 1000 + nsec / 1000000;
+		},
+	};
+
+	const util = require("util");
+	global.TextEncoder = util.TextEncoder;
+	global.TextDecoder = util.TextDecoder;
 
 	const encoder = new TextEncoder("utf-8");
 	const decoder = new TextDecoder("utf-8");

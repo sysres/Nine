@@ -13,16 +13,22 @@ function createWindow () {
     win = new BrowserWindow({
         width: 1024,
         height: 768,
-        backgroundColor: '#000000'
-    });
+        backgroundColor: '#000000',
+        //fullscreen: true,
+        webPreferences: {
+            nodeIntegration: true,
+            nodeIntegrationInWorker: true,
+            webgl: true
+        }
+    });    
     
-    // and load the hello.html of the app.
+    // and load the index.html of the app.
     win.loadURL(url.format({
         pathname: path.join(__dirname, 'dist/index.html'),
         protocol: 'file:',
         slashes: true
     }));
-    //win.webContents.openDevTools();
+    win.webContents.openDevTools();
     win.on('closed', () => {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time

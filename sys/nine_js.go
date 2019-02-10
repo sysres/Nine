@@ -15,3 +15,7 @@ func bootstrap(nine *Nine) error {
 	nine.Ctx2d = GetJSCtx2d(canvasEl)
 	return nil
 }
+
+func startService(name string) {
+	js.Global().Call("loadService", name)
+}

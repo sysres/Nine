@@ -38,10 +38,14 @@ func Bootstrap() error {
 		return err
 	}
 
+	ClearScreen()
+	return nil
+}
+
+func ClearScreen() {
 	nine.Ctx2d.ClearRect(0, 0, nine.ScreenWidth, nine.ScreenHeight)
 	nine.Ctx2d.SetFillStyle(defBgStyle)
 	nine.Ctx2d.FillRect(0, 0, nine.ScreenWidth, nine.ScreenHeight)
-	return nil
 }
 
 // Printf is a low level primitive to print formatted text to
@@ -56,4 +60,8 @@ func Printf(x, y float64, format string, args ...interface{}) {
 	nine.Ctx2d.SetFont(defFont)
 	nine.Ctx2d.SetFillStyle(defFontStyle)
 	nine.Ctx2d.FillText(str, x, y)
+}
+
+func StartService(name string) {
+	startService(name)
 }
