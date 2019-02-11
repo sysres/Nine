@@ -12,92 +12,17 @@
 
     </style>
     
-    <script src="setup.js"></script>
-    <script src="wasm_exec.js"></script>
     <script>
-      window.addEventListener('load', boot);
-
-      var screen; // System screen
-
-      var PIXEL_RATIO = (function () {
-        var ctx = document.createElement("canvas").getContext("2d"),
-            dpr = window.devicePixelRatio || 1,
-            bsr = ctx.webkitBackingStorePixelRatio ||
-                  ctx.mozBackingStorePixelRatio ||
-                  ctx.msBackingStorePixelRatio ||
-                  ctx.oBackingStorePixelRatio ||
-                  ctx.backingStorePixelRatio || 1;
-        return dpr / bsr;
-      })();
-
-
-      // Create a canvas scaled up to the devicePixelRatio.
-      // Otherwise Nine will have to deal with the aspect ratio
-      // when drawing.
-      // https://www.html5rocks.com/en/tutorials/canvas/hidpi/
-      function createHiDPICanvas(w, h, ratio) {
-          if (!ratio) { ratio = PIXEL_RATIO; }
-          var can = document.createElement("canvas");
-          can.id = "screen";
-          can.width = w * ratio;
-          can.height = h * ratio;
-          can.style.width = w + "px";
-          can.style.height = h + "px";
-          can.getContext("2d").setTransform(ratio, 0, 0, ratio, 0, 0);
-          return can;
-      }
-
-      function loadKern() {
-          screen = createHiDPICanvas(window.innerWidth, window.innerHeight);
-          document.body.appendChild(screen);
-
-          
-
-          const go = new Go();
-          let mod, inst;
-		      WebAssembly.instantiateStreaming(fetch("kern.wasm"), go.importObject).then((result) => {
-			      mod = result.module;
-            inst = result.instance;
-            
-            run();
-		      });
-
-          async function run() {
-            console.clear();
-            await go.run(inst);
-            console.log("finished....");
-          }
-      }
-
-      function loadService(name) {
-        var worker = new Worker(name+".js");
-        worker.onerror = function (evt) { console.log(`Error from Web Worker: ${evt.message}`); }
-        worker.onmessage = function (evt) { alert(`Message from the Web Worker:\n\n ${evt.data}`); }
-
-        const wasmName = name+".wasm";
-                
-        fetch(wasmName).then(response =>
-          response.arrayBuffer()
-        ).then(bytes =>
-          WebAssembly.compile(bytes)
-        ).then(WasmModule =>
-          worker.postMessage({ "msgType": "CompiledModule", "WasmModule": WasmModule })
-        )
-
-        setInterval(function() {
-          worker.postMessage({ "msgType": "Hello" });
-        }, 3000);
-      }
-
-      function boot() {
-        console.log(process);
+        process.on('exit', function(obj) {
+          console.log("exit: ", obj);
+        });
         
-        loadKern();
-        //loadService("proc");
-      }
-
-
-    </script>
+        process.on('uncaughtException', function (err) {
+          console.log('uncaughtException', { message : err.message, stack : err.stack });          
+        });
+      </script>
+    <script src="goloader.js"></script>
+    <script src="bootloader.js"></script>
   </head>
 
   <body>

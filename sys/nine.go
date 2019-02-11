@@ -65,3 +65,7 @@ func Printf(x, y float64, format string, args ...interface{}) {
 func StartService(name string) {
 	startService(name)
 }
+
+func Wait() {
+	wait()
+}

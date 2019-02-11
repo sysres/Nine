@@ -3,12 +3,18 @@ package main
 import (
 	"fmt"
 	"syscall/js"
+
+	"github.com/madlambda/Nine/sys"
 )
 
-func Hello(args []js.Value) { fmt.Printf("Hello from Proc") }
+func Hello(this js.Value, args []js.Value) interface{} {
+	fmt.Printf("Hello from Proc")
+	return nil
+}
 
 func main() {
-	c := make(chan struct{})
-	js.Global().Set("Hello", js.NewCallback(Hello))
-	<-c
+
+	js.Global().Set("Hello", js.FuncOf(Hello))
+
+	sys.Wait()
 }
