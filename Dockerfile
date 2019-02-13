@@ -6,6 +6,10 @@ RUN npm update && npm i -D electron@beta
 
 ENV GOOS js
 ENV GOARCH wasm
+ENV PATH "${PATH}:/usr/local/go/misc/wasm"
 
 WORKDIR /go/src/github.com/madlambda/Nine
+
+RUN go get -v github.com/madlambda/spells/...
+
 COPY . .

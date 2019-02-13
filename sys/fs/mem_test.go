@@ -8,10 +8,15 @@ import (
 )
 
 func basicFileTest(t *testing.T, name string, data []byte, expectedErr error) {
+	t.Helper()
 	memfs := fs.NewInMem()
-	assert.EqualErrs(t, memfs.Mkfile(name, data), expectedErr, "mkfile")
+	err := memfs.Mkfile(name, data)
+	assert.EqualErrs(t, err, expectedErr, "mkfile")
+	if err != nil {
+		return
+	}
 	fdata, err := memfs.Data(name)
-	assert.EqualErrs(t, err, expectedErr, "data")
+	assert.EqualErrs(t, expectedErr, err, "data")
 	assert.EqualStrings(t, name, fdata.Name(), "name mismatch")
 }
 
