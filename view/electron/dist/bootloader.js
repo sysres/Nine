@@ -52,44 +52,8 @@ function loadKern() {
     async function run() {
       await go.run(inst);
     }
-
-    kchanProc.onmessage = function(e) {
-        alert('Message from process!!!'+e.data);
-    }
-}
-
-function sched() {
-    var worker = new Worker("sched.js");
-    worker.onerror = function (evt) { alert(`Error from sched service: ${evt.message}`); };
-    worker.onmessage = function (evt) {
-        let msg = JSON.parse(evt.data);
-        if(msg.type !== 'status') {
-            alert(`CRITICAL: kernel received ${msg} from sched`);
-            return;
-        }
-
-        if(msg.value !== 'running') {
-            alert(`CRITICAL: sched service not started`);
-            return;
-        }
-
-        // TODO(i4k): handle this from kernel
-        worker.onmessage = function(evt) {
-            console.log(`WARNING::js kernel:: Message from sched: ${evt.data}`);
-        };
-
-        worker.onerror = function(evt) {
-            console.log(`WARNING::js kernel:: Error from sched: ${evt.message}`);
-        }
-
-        worker.postMessage(JSON.stringify({
-            'type': 'exec',
-            'path': 'wm/wm.wasm'
-        }));
-    };
 }
 
 function boot() {        
   loadKern();
-  sched();
 }

@@ -20,9 +20,9 @@
 		constants: { O_WRONLY: -1, O_RDWR: -1, O_CREAT: -1, O_TRUNC: -1, O_APPEND: -1, O_EXCL: -1 }, // unused
 	};
 
-	if(isMainThread) {
+	if(false) {
 		let errfn = function() {
-			alert("CRITICAL: fs API not allowed inside kernel");
+			throw new Error("CRITICAL: fs API not allowed inside kernel");
 		};
 
 		fs.writeSync = errfn;
