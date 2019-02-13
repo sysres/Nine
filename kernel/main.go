@@ -7,12 +7,16 @@ import (
 	"syscall/js"
 
 	"github.com/madlambda/Nine/sys"
+	"github.com/madlambda/Nine/sys/log"
 	"github.com/madlambda/Nine/sys/proc"
 )
 
+var counter int
+
 func onProcMessage(this js.Value, args []js.Value) interface{} {
-	data := args[0].Get("data")
-	js.Global().Call("alert", "Message from process!!!"+data.String())
+	counter++
+	log.Printf(args[0].Get("data").String())
+	log.Printf("%d", counter)
 	return nil
 }
 

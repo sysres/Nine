@@ -30,7 +30,7 @@ function createHiDPICanvas(w, h, ratio) {
     return can;
 }
 
-function loadKern() {    
+function boot() {    
     let go = new Go();
     let mod, inst;
     
@@ -52,8 +52,4 @@ function loadKern() {
     async function run() {
       await go.run(inst);
     }
-}
-
-function boot() {        
-  loadKern();
 }
