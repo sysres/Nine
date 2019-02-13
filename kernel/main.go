@@ -14,6 +14,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	sys.Printf(5, 20, "Kernel loaded\n")
+	sys.Printf(5, 20, "Welcome to Nine OS!")
+	sys.Printf(5, 40, sys.RuntimeInfo())
 	sys.Wait()
 }

@@ -9,3 +9,7 @@ type (
 		FillRect(x, y, width, height float64)
 	}
 )
+
+func NewCtx2d() Ctx2d {
+	return newCtx2d()
+}

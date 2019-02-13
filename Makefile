@@ -19,7 +19,7 @@ shell:
 
 local-build:
 	cd kernel/ && go build -o ../view/$(SYSHOST)/dist/kern.wasm
-	cd kernel/proc && go build -o ../../view/$(SYSHOST)/dist/proc.wasm
+	cd sys/cmd/wm && go build -o ../../../view/$(SYSHOST)/dist/wm/wm.wasm
 
 run: run-electron
 run-electron:
@@ -30,5 +30,5 @@ build-image:
 
 clean:
 	rm -f view/$(SYSHOST)/dist/kern.wasm
-	rm -f view/$(SYSHOST)/dist/proc.wasm
+	rm -f view/$(SYSHOST)/dist/wm/wm.wasm
 

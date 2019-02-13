@@ -3,6 +3,7 @@ package sys
 import (
 	"fmt"
 	"runtime"
+	"strings"
 
 	"github.com/madlambda/Nine/sys/graphics"
 )
@@ -16,14 +17,34 @@ type (
 )
 
 const (
-	defBgStyle   = "#000000"
-	defFontStyle = "#ffffff"
-	defFont      = "18px Helvetica"
+	defBgStyle    = "#000000"
+	defFontStyle  = "#ffffff"
+	defFontSize   = 18 // in pixels
+	defFontFamily = "Helvetica"
+
+	NineVersion = "0.1"
 )
 
 var (
-	nine *Nine
+	nine    *Nine
+	defFont string
 )
+
+func init() {
+	defFont = fmt.Sprintf("%dpx %s", defFontSize, defFontFamily)
+}
+
+// Version of Nine
+func Version() string {
+	return fmt.Sprintf("Nine v%s", NineVersion)
+}
+
+// RuntimeInfo shows information about the various runtimes of Nine
+func RuntimeInfo() string {
+	return fmt.Sprintf(`%s
+Go version: %s
+Runtime info: %s`, Version(), GoVersion(), runtimeInfo())
+}
 
 // GoVersion returns the Go's runtime version.
 func GoVersion() string {
@@ -37,6 +58,8 @@ func Bootstrap() error {
 	if err != nil {
 		return err
 	}
+
+	nine.Ctx2d = graphics.NewCtx2d()
 
 	ClearScreen()
 	return nil
@@ -59,7 +82,11 @@ func Printf(x, y float64, format string, args ...interface{}) {
 	str := fmt.Sprintf(format, args...)
 	nine.Ctx2d.SetFont(defFont)
 	nine.Ctx2d.SetFillStyle(defFontStyle)
-	nine.Ctx2d.FillText(str, x, y)
+
+	txts := strings.Split(str, "\n")
+	for i, txt := range txts {
+		nine.Ctx2d.FillText(txt, x, y+float64(i*(defFontSize+1)))
+	}
 }
 
 func StartService(name string) {

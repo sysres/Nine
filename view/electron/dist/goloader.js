@@ -4,8 +4,67 @@
 		alert("Nine+Electron requires nodejs environment");
 	}
 
+	let isMainThread = false;
+
+	try {
+		isMainThread = document !== undefined;
+	} catch(e) {};
+
 	global.require = require;
-	global.fs = require("fs");
+	let outputBuf = "";
+	global.fs = {
+		// Nine fs constants
+		// These are the values that Go programs compiled to WASM will use
+		// for each flag below
+		// TBD
+		constants: { O_WRONLY: -1, O_RDWR: -1, O_CREAT: -1, O_TRUNC: -1, O_APPEND: -1, O_EXCL: -1 }, // unused
+	};
+
+	if(isMainThread) {
+		let errfn = function() {
+			alert("CRITICAL: fs API not allowed inside kernel");
+		};
+
+		fs.writeSync = errfn;
+		fs.open = errfn;
+		fs.write = errfn;
+		fs.read = errfn;
+		fs.fsync = errfn;
+	} else {
+		fs.open = function(path, flags, mode, callback) {
+			const err = new Error("not implemented");
+			err.code = "ENOSYS";
+			callback(err);
+		};
+
+		fs.writeSync = function(fd, buf) {
+			outputBuf += decoder.decode(buf);
+			const nl = outputBuf.lastIndexOf("\n");
+			if (nl != -1) {
+				console.log(outputBuf.substr(0, nl));
+				outputBuf = outputBuf.substr(nl + 1);
+			}
+			return buf.length;
+		};
+
+		fs.write = function(fd, buf, offset, length, position, callback) {
+			if (offset !== 0 || length !== buf.length || position !== null) {
+				throw new Error("not implemented");
+			}
+			const n = this.writeSync(fd, buf);
+			callback(null, n);
+		};
+
+		fs.read = function(fd, buffer, offset, length, position, callback) {
+			const err = new Error("not implemented");
+			err.code = "ENOSYS";
+			callback(err);
+		};
+
+		fs.fsync = function(fd, callback) {
+			callback(null);
+		};
+	}
 
 	const nodeCrypto = require("crypto");
 	global.crypto = {

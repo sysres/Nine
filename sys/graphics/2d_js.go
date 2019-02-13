@@ -1,6 +1,8 @@
-package sys
+package graphics
 
-import "syscall/js"
+import (
+	"syscall/js"
+)
 
 type (
 	JSCtx2d struct {
@@ -9,10 +11,18 @@ type (
 	}
 )
 
-func GetJSCtx2d(canvasEl js.Value) *JSCtx2d {
+func newCtx2d() *JSCtx2d {
+	win := js.Global().Get("window")
+	docbody := js.Global().Get("document").Get("body")
+	innerWidth := win.Get("innerWidth").Float()
+	innerHeight := win.Get("innerHeight").Float()
+
+	screen := js.Global().Call("createHiDPICanvas", innerWidth, innerHeight)
+	docbody.Call("appendChild", screen)
+
 	return &JSCtx2d{
-		canvas: canvasEl,
-		Value:  canvasEl.Call("getContext", "2d"),
+		canvas: screen,
+		Value:  screen.Call("getContext", "2d"),
 	}
 }
 

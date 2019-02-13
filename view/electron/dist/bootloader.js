@@ -1,9 +1,6 @@
 const kernBinary = "kern.wasm";
-
-window.addEventListener('load', boot);
-
-var screen; // System screen
 var PIXEL_RATIO;
+var kchanProc = new BroadcastChannel('kchan-proc');
 
 PIXEL_RATIO = (function () {
   var ctx = document.createElement("canvas").getContext("2d"),
@@ -16,6 +13,7 @@ PIXEL_RATIO = (function () {
   return dpr / bsr;
 })();
 
+window.addEventListener('load', boot);
 
 // Create a canvas scaled up to the devicePixelRatio.
 // Otherwise Nine will have to deal with the aspect ratio
@@ -24,7 +22,6 @@ PIXEL_RATIO = (function () {
 function createHiDPICanvas(w, h, ratio) {
     if (!ratio) { ratio = PIXEL_RATIO; }
     var can = document.createElement("canvas");
-    can.id = "screen";
     can.width = w * ratio;
     can.height = h * ratio;
     can.style.width = w + "px";
@@ -33,10 +30,7 @@ function createHiDPICanvas(w, h, ratio) {
     return can;
 }
 
-function loadKern() {
-    screen = createHiDPICanvas(window.innerWidth, window.innerHeight);
-    document.body.appendChild(screen);     
-    
+function loadKern() {    
     let go = new Go();
     let mod, inst;
     
@@ -58,23 +52,44 @@ function loadKern() {
     async function run() {
       await go.run(inst);
     }
+
+    kchanProc.onmessage = function(e) {
+        alert('Message from process!!!'+e.data);
+    }
 }
 
-function loadService(name) {
-    var worker = new Worker(name+".js");
-    worker.onerror = function (evt) { console.log(`Error from Web Worker: ${evt.message}`); };
-    worker.onmessage = function (evt) { alert(`Message from the Web Worker:\n\n ${evt.data}`); };
+function sched() {
+    var worker = new Worker("sched.js");
+    worker.onerror = function (evt) { alert(`Error from sched service: ${evt.message}`); };
+    worker.onmessage = function (evt) {
+        let msg = JSON.parse(evt.data);
+        if(msg.type !== 'status') {
+            alert(`CRITICAL: kernel received ${msg} from sched`);
+            return;
+        }
 
-    setTimeout(function() {
-        worker.postMessage({ "msgType": "load" });
-    }, 5000);
+        if(msg.value !== 'running') {
+            alert(`CRITICAL: sched service not started`);
+            return;
+        }
 
-    setInterval(function() {
-        worker.postMessage({ "msgType": "Hello" });
-    }, 7000);
+        // TODO(i4k): handle this from kernel
+        worker.onmessage = function(evt) {
+            console.log(`WARNING::js kernel:: Message from sched: ${evt.data}`);
+        };
+
+        worker.onerror = function(evt) {
+            console.log(`WARNING::js kernel:: Error from sched: ${evt.message}`);
+        }
+
+        worker.postMessage(JSON.stringify({
+            'type': 'exec',
+            'path': 'wm/wm.wasm'
+        }));
+    };
 }
 
 function boot() {        
   loadKern();
-  loadService("proc");
+  sched();
 }

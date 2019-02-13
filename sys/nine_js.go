@@ -3,23 +3,26 @@
 package sys
 
 import (
+	"fmt"
 	"syscall/js"
 )
 
 var beforeUnloadChan = make(chan struct{})
 
-func beforeUnload(this js.Value, args []js.Value) interface{} {
-	beforeUnloadChan <- struct{}{}
+func bootstrap(nine *Nine) error {
+	doc := js.Global().Get("document")
+	nine.ScreenWidth = doc.Get("body").Get("clientWidth").Float()
+	nine.ScreenHeight = doc.Get("body").Get("clientHeight").Float()
 	return nil
 }
 
-func bootstrap(nine *Nine) error {
-	doc := js.Global().Get("document")
-	canvasEl := doc.Call("getElementById", "screen")
+func runtimeInfo() string {
+	nodeVersion := js.Global().Get("process").Get("version")
+	return fmt.Sprintf("NodeJS %s", nodeVersion.String())
+}
 
-	nine.ScreenWidth = doc.Get("body").Get("clientWidth").Float()
-	nine.ScreenHeight = doc.Get("body").Get("clientHeight").Float()
-	nine.Ctx2d = GetJSCtx2d(canvasEl)
+func beforeUnload(this js.Value, args []js.Value) interface{} {
+	beforeUnloadChan <- struct{}{}
 	return nil
 }
 
